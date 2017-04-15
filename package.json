@@ -1,0 +1,19 @@
+{
+  "name": "app-spotify",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "morgan": "~1.8.1",
+    "properties-reader": "0.0.15",
+    "pug": "~2.0.0-beta11",
+    "request": "^2.81.0",
+    "serve-favicon": "~2.4.2"
+  }
+}
