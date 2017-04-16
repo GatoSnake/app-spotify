@@ -10,25 +10,20 @@ const endpoint_api = properties.get('spotify.endpoint.api.v1');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    //console.log(req.session);
     var session = req.session;
-    if (session.spotify) {
-        request.get(endpoint_api + '/me', {
-            auth: {
-                bearer: session.spotify.auth.access_token
-            }
-        }, (e, r, body) => {
-            body = JSON.parse(body);
-            //console.log(body);
-            res.render('home', {
-                username: body.display_name,
-                img_user: body.images[0].url
-            });
-            //res.send(`Welcome ${body.display_name}`);
+    request.get(endpoint_api + '/me', {
+        auth: {
+            bearer: session.spotify.auth.access_token
+        }
+    }, (e, r, body) => {
+        body = JSON.parse(body);
+        //console.log(body);
+        res.render('home', {
+            username: body.display_name,
+            img_user: body.images[0].url
         });
-    }else{
-        res.redirect('/');
-    }
+        //res.send(`Welcome ${body.display_name}`);
+    });
 });
 
 module.exports = router;

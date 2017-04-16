@@ -15,41 +15,20 @@ const redirect_uri = properties.get('spotify.redirect.uri');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var session = req.session;
-    try {
-        if (session.spotify) {
-            res.redirect('/home');
-        } else {
-            res.render('index', {
-                title: 'Demo Spotify'
-            });
-        }
-    } catch (e) {
-        console.log(e);
-        session.destroy();
-        res.redirect('/');
-    }
+    res.render('index', {
+        title: 'Demo Spotify'
+    });
 });
 
 /* Login Spotify home page. */
 router.get('/login', (req, res, next) => {
-    var session = req.session;
-    try {
-        if (session.spotify) {
-            res.redirect('/home');
-        } else {
-            let oauth = {
-                client_id: client_id,
-                redirect_uri: redirect_uri,
-                response_type: 'code'
-            };
-            let url = endpoint_authorize + '?' + qs.stringify(oauth);
-            res.redirect(url);
-        }
-    } catch (e) {
-        console.log(e);
-        res.redirect('/');
-    }
+    let oauth = {
+        client_id: client_id,
+        redirect_uri: redirect_uri,
+        response_type: 'code'
+    };
+    let url = endpoint_authorize + '?' + qs.stringify(oauth);
+    res.redirect(url);
 });
 
 /* Callback login spotify */
