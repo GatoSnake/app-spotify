@@ -11,6 +11,7 @@ var PropertiesReader = require('properties-reader');
 var index = require('./routes/index');
 var home = require('./routes/home');
 var profiles = require('./routes/profiles');
+var search = require('./routes/search');
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.all('*', checkAuth);
 app.use('/', index);
 app.use('/home', home);
 app.use('/me', profiles);
+app.use('/search', search);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
