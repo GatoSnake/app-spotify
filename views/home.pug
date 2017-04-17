@@ -1,6 +1,14 @@
 extends layout
 
 block content
-    p Welcome #{username}
-    img(src=img_user)
+    h2 Welcome to the home page
     a(href='/logout') Logout!
+
+    br
+    br
+
+    h3 API list
+    a(href='/me') Get current user's profile
+    br
+    a(href='/me/following') Get Followed Artists
+    br

@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
+var rp = require('request-promise');
 var qs = require('querystring');
 var PropertiesReader = require('properties-reader');
 
@@ -12,6 +13,7 @@ const secret_id = properties.get('spotify.secret.id');
 const endpoint_authorize = properties.get('spotify.endpoint.authorize');
 const endpoint_token = properties.get('spotify.endpoint.token');
 const redirect_uri = properties.get('spotify.redirect.uri');
+const scopes = properties.get('spotify.scopes');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -25,7 +27,8 @@ router.get('/login', (req, res, next) => {
     let oauth = {
         client_id: client_id,
         redirect_uri: redirect_uri,
-        response_type: 'code'
+        response_type: 'code',
+        scope: scopes
     };
     let url = endpoint_authorize + '?' + qs.stringify(oauth);
     res.redirect(url);
@@ -37,7 +40,9 @@ router.get('/callback', (req, res, next) => {
     if (req.query.error === 'access_denied') {
         res.render('errors/access_denied');
     } else {
-        request.post(endpoint_token, {
+        rp({
+            method: 'POST',
+            uri: endpoint_token,
             form: {
                 grant_type: 'authorization_code',
                 code: req.query.code,
@@ -47,19 +52,16 @@ router.get('/callback', (req, res, next) => {
                 'user': client_id,
                 'pass': secret_id,
             }
-        }, (e, r, body) => {
-            console.log(body);
-            if (r.statusCode === 200) {
-                body = JSON.parse(body);
-                console.log(session);
-                session.spotify = {
-                    auth: body
-                };
-                res.redirect('/home');
-            } else {
-                //console.log(r);
-                res.send(`Error ${r.statusCode}!`);
-            }
+        }).then((body) => {
+            body = JSON.parse(body);
+            session.spotify = {
+                auth: body
+            };
+            res.redirect('/home');
+        }).catch((err) => {
+            var error = new Error('Error Authentication Spotify');
+            error.status = err.statusCode;
+            next(error);
         });
     }
 });
